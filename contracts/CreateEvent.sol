@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-contract Events {
+contract CreateEvent {
     address public immutable owner;
 
-    mapping(uint => Event) private events;
+    mapping(uint => Event) public events;
 
-    uint public currentEventId;
+    uint256 public currentEventId;
 
     struct Event {
         address creator;
@@ -18,9 +18,10 @@ contract Events {
         uint eventType;
         uint price;
         uint ticketQuantity;
+        uint remainingTickets;
     }
 
-    event CreateEvent(
+    event EventCreated (
         uint indexed eventId,
         address indexed creator,
         string indexed location,
@@ -65,10 +66,11 @@ contract Events {
             description: description,
             eventType: eventType,
             price: price,
-            ticketQuantity: ticketQuantity
+            ticketQuantity: ticketQuantity,
+            remainingTickets: ticketQuantity
         });
 
-        emit CreateEvent(
+        emit EventCreated (
             currentEventId,
             msg.sender,
             location,
