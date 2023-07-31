@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-contract CreateEvent {
+contract EventManager {
     address public immutable owner;
 
     mapping(uint => Event) public events;

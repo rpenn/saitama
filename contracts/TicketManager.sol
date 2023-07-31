@@ -2,9 +2,9 @@
 pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-import "./CreateEvent.sol";
+import "./EventManager.sol";
 
-contract TicketManager is ERC1155, CreateEvent {
+contract TicketManager is ERC1155, EventManager {
 
     error InvalidId();
     error ExceededTicketQtyLeft();
