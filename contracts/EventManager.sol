@@ -14,6 +14,7 @@ contract EventManager {
         string location;
         uint date;
         uint startTime;
+        uint endTime;
         string description;
         uint eventType;
         uint price;
@@ -27,6 +28,7 @@ contract EventManager {
         string indexed location,
         uint date,
         uint startTime,
+        uint endTime,
         uint price
         // can add other event criteria as needed.
     );
@@ -37,6 +39,7 @@ contract EventManager {
         string indexed location,
         uint date,
         uint startTime,
+        uint endTime,
         uint price
         // can add other event criteria as needed.
     );
@@ -50,6 +53,7 @@ contract EventManager {
         string memory location,
         uint date,
         uint startTime,
+        uint endTime,
         string memory description,
         uint eventType,
         uint price,
@@ -63,6 +67,7 @@ contract EventManager {
             location: location,
             date: date,
             startTime: startTime,
+            endTime: endTime,
             description: description,
             eventType: eventType,
             price: price,
@@ -76,6 +81,7 @@ contract EventManager {
             location,
             date,
             startTime,
+            endTime,
             price
         );        
     }
@@ -86,6 +92,7 @@ contract EventManager {
         string memory location,
         uint date,
         uint startTime,
+        uint endTime,
         string memory description,
         uint eventType,
         // is it feasible to edit some of this stuff, post even creation? suppose tix are sold arleady?
@@ -113,6 +120,10 @@ contract EventManager {
             eventToUpdate.startTime = startTime;
         }
 
+        if (endTime != eventToUpdate.endTime) {
+            eventToUpdate.endTime = endTime;
+        }
+
         if (bytes(description).length > 0 && keccak256(bytes(description)) != keccak256(bytes(eventToUpdate.description))) {
             eventToUpdate.description = description;
         }
@@ -135,6 +146,7 @@ contract EventManager {
             eventToUpdate.location,
             eventToUpdate.date,
             eventToUpdate.startTime,
+            eventToUpdate.endTime,
             eventToUpdate.price
         );
     }
