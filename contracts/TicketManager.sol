@@ -2,14 +2,18 @@
 pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./EventManager.sol";
 
-contract TicketManager is ERC1155, EventManager {
+contract TicketManager is ERC1155, ReentrancyGuard, EventManager {
 
     error InvalidId();
     error ExceededTicketQtyLeft();
     error InsufficientETHSent();
     error NotEnoughTickets();
+    error NotCreator();
+    error FailedWithdrawal();
+    error OngoingEvent();
 
     event PurchaseSuccessful(address indexed minter, uint256 indexed eventId, uint256 indexed numOfTickets);
     event TransferSucessful(address indexed sender, address indexed recipient, uint256 indexed eventId, uint256 numOfTickets);
@@ -41,6 +45,21 @@ contract TicketManager is ERC1155, EventManager {
         safeTransferFrom(msg.sender, recipient, eventId, numOfTickets, "");
 
         emit TransferSucessful(msg.sender, recipient, eventId, numOfTickets);
+    }
+
+    function withdraw(uint256 eventId) external checkId(eventId) nonReentrant {
+        Event memory tempEvent = events[eventId];
+        address creator = tempEvent.creator;
+
+        if(block.timestamp < tempEvent.endTime) revert OngoingEvent();
+        if(msg.sender != creator) revert NotCreator();
+
+        uint256 withdrawalAmount = (tempEvent.ticketQuantity - tempEvent.remainingTickets) * tempEvent.price;
+
+        (bool success,) = creator.call{value: withdrawalAmount}("");
+        if (!success) revert FailedWithdrawal();
+
+        delete events[eventId];
     }
     
 }
