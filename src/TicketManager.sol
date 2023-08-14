@@ -46,6 +46,18 @@ contract TicketManager is ERC1155, ReentrancyGuard, EventManager {
 
         emit TransferSucessful(msg.sender, recipient, eventId, numOfTickets);
     }
+    
+    // Not required for now but burning could add potential use cases ahead
+    function burnTickets(address[] memory holders, uint256 eventId) external {
+        Event memory tempEvent = events[eventId];
+        address creator = tempEvent.creator;
+
+        if(msg.sender != creator) revert NotCreator();
+        
+        for(uint i = 0 ; i < holders.length ; ++i) {
+            _burn(holders[i], eventId, balanceOf(holders[i], eventId));
+        }
+    }
 
     function withdraw(uint256 eventId) external checkId(eventId) nonReentrant {
         Event memory tempEvent = events[eventId];
