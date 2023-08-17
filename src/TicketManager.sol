@@ -25,6 +25,10 @@ contract TicketManager is ERC1155, ReentrancyGuard, EventManager {
 
     constructor(string memory uri_) ERC1155(uri_) {}
 
+    function getUri(uint256 eventId) external view returns(string memory) {
+        string memory baseUri =  uri(eventId);
+        return string(abi.encodePacked(baseUri, eventId));
+    }
 
     function purchaseTickets(uint256 eventId, uint256 numOfTickets) external payable checkId(eventId) {
         uint256 remainingTickets = events[eventId].remainingTickets;
