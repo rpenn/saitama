@@ -13,4 +13,9 @@ contract testEventManager is Test {
     function setUp() external {
         eventManager = new EventManager();
     }
+
+    function testOwnerIsMsgSender() public {
+        address owner = eventManager.owner();
+        assertEq(owner, address(this));
+    }
 }
