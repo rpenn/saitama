@@ -4,9 +4,9 @@ import App from './App.tsx'
 import { createBrowserRouter, RouterProvider, Route,} from "react-router-dom";
 import './index.css';
 import Root from './pages/Root';
-// import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/Dashboard';
 import CreateEvent from './pages/CreateEvent';
-// import PurchaseEvent from './pages/PurchaseEvent';
+import PurchaseEvent from './pages/PurchaseEvent';
 import ErrorPage from "./error-page";
 
 const router = createBrowserRouter([
@@ -15,18 +15,18 @@ const router = createBrowserRouter([
     element: <Root />,
     errorElement: <ErrorPage />,
     children: [
-      // {
-      //   path: "dashboard",
-      //   element: <Dashboard />,
-      // },
+      {
+        path: "dashboard",
+        element: <Dashboard />,
+      },
       {
         path: "create-event",
         element: <CreateEvent />,
       },
-      // {
-      //   path: "purchase-event",
-      //   element: <PurchaseEvent />,
-      // }
+      {
+        path: "purchase-event",
+        element: <PurchaseEvent />,
+      }
     ]
   },
 ]);
