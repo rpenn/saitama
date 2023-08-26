@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import fleekStorage from "@fleekhq/fleek-storage-js";
+import { ethers } from "ethers";
+import dotenv from "dotenv";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function CreateEvent(){
-    console.log(DatePicker)
 	const [name, setName] = useState()
     const [location, setLocation] = useState()
     const [startDate, setStartDate] = useState(new Date())
@@ -16,8 +18,30 @@ export default function CreateEvent(){
 		console.log({ name, location, startDate, description, price, totalTickets });
 	}, [name, location, startDate, description, price, totalTickets]);
 
+    let signer = null;
+    let provider;
+    // let providerUrl = import.meta.env.VITE_ALCHEMY_MUMBAI_URL;
+    let file;
+    
+    if (window.ethereum == null) {
 
-	let file;
+        // If MetaMask is not installed, we use the default provider,
+        console.log("MetaMask not installed; using read-only defaults");
+        provider = ethers.getDefaultProvider();
+
+    } else {
+
+        // Connect to the MetaMask EIP-1193 object. This is a standard
+        // protocol that allows Ethers access to make all read-only
+        // requests through MetaMask.
+        provider = new ethers.BrowserProvider(window.ethereum);
+        // provider = new ethers.JsonRpcProvider(providerUrl);
+
+        // It also provides an opportunity to request access to write
+        // operations, which will be performed by the private key
+        // that MetaMask manages for the user.
+        signer = provider.getSigner();
+    }
 
 	const uploadHandler = async (e) => {
 		file = e.target.files[0];
@@ -37,14 +61,14 @@ export default function CreateEvent(){
 			},
 		});
 		
-		// const metadata = {
-		// 	"description": description,
-		// 	"external_url": null,
-		// 	"image": uploadedFile.hash,
-		// 	"name": name,
-		// 	"attributes": []
-		// }
-		// console.log(file, uploadedFile.hash, metadata)
+		const metadata = {
+			"description": description,
+			"external_url": null,
+			"image": uploadedFile.hash,
+			"name": name,
+			"attributes": []
+		}
+		console.log(file, uploadedFile.hash, metadata)
 	};
 
     const dateToUnixTimestamp = date => {
@@ -61,7 +85,7 @@ export default function CreateEvent(){
 	<div>
 		<form>
 			<h1 id="create-new-event">Create New Event</h1>
-			<ol class="main-details">
+			<ol>
 				<li id="event_name">
 				Event Name
 				<br />
@@ -87,12 +111,6 @@ export default function CreateEvent(){
                 <li id="event_start_date">
 				Event Start Date
 				<br />
-				{/* <input
-					id="textbox1"
-					type="text"
-					value={date}
-					onChange={(e) => setStartDate(e.target.value)}
-				/> */}
                 <DatePicker
                     // showIcon
                     selected={startDate}
