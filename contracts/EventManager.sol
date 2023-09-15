@@ -150,4 +150,16 @@ contract EventManager {
             eventToUpdate.price
         );
     }
+
+    function getCurrentEventId() external view returns(uint256){
+        return currentEventId;
+    }
+
+    function getOwner() external view returns(address) {
+        return owner;
+    }
+
+    function getEvent(uint256 _currentEventId) external view returns(Event memory) {
+        return events[_currentEventId];
+    }
 }
