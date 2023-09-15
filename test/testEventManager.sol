@@ -2,7 +2,7 @@
 pragma solidity 0.8.19;
 
 import {Test, console} from "forge-std/Test.sol";
-import {EventManager} from "../src/EventManager.sol";
+import {EventManager} from "contracts/EventManager.sol";
 
 contract testEventManager is Test {
 
