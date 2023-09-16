@@ -11,7 +11,7 @@ contract testTicketManager is Test {
     TicketManager ticketManager;
 
     // Sample URI - this is our ticketex URI
-    string constant URI = "https://storage.fleek-internal.com/513c5496-b170-498d-a846-123191d5e84f-bucket";
+    string constant URI = "https://storage.fleek-internal.com/513c5496-b170-498d-a846-123191d5e84f-bucket/";
 
     function setUp() public {
         ticketManager = new TicketManager(URI);
@@ -20,4 +20,10 @@ contract testTicketManager is Test {
     function testCorrectURISet() public {
         assertEq(ticketManager.uri(0), URI);
     }
+
+    function testCorrectUriReturnedForAnEvent() public {
+        assertEq(ticketManager.getUri(1), string(abi.encodePacked(URI, "1")));
+    }
+
+    
 }
