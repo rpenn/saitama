@@ -2,6 +2,7 @@
 pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./EventManager.sol";
 
@@ -26,15 +27,16 @@ contract TicketManager is ERC1155, ReentrancyGuard, EventManager {
     constructor(string memory uri_) ERC1155(uri_) {}
 
     function getUri(uint256 eventId) external view returns(string memory) {
+        string memory eventID = Strings.toString(eventId);
         string memory baseUri =  uri(eventId);
-        return string(abi.encodePacked(baseUri, eventId));
+        return string(abi.encodePacked(baseUri, eventID));
     }
 
     function purchaseTickets(uint256 eventId, uint256 numOfTickets) external payable checkId(eventId) {
         uint256 remainingTickets = events[eventId].remainingTickets;
 
         if(numOfTickets > remainingTickets) revert ExceededTicketQtyLeft();
-        if(msg.value < events[eventId].price * numOfTickets) revert InsufficientETHSent();
+        if(msg.value != events[eventId].price * numOfTickets) revert InsufficientETHSent();
         
         events[eventId].remainingTickets = remainingTickets - numOfTickets;
 
