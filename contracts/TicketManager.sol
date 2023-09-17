@@ -36,7 +36,7 @@ contract TicketManager is ERC1155, ReentrancyGuard, EventManager {
         uint256 remainingTickets = events[eventId].remainingTickets;
 
         if(numOfTickets > remainingTickets) revert ExceededTicketQtyLeft();
-        if(msg.value < events[eventId].price * numOfTickets) revert InsufficientETHSent();
+        if(msg.value != events[eventId].price * numOfTickets) revert InsufficientETHSent();
         
         events[eventId].remainingTickets = remainingTickets - numOfTickets;
 
