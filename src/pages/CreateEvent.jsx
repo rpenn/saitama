@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import fleekStorage from "@fleekhq/fleek-storage-js";
 import { ethers } from "ethers";
-import dotenv from "dotenv";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
