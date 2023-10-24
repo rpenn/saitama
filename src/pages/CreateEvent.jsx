@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Profiler } from "react";
 import fleekStorage from "@fleekhq/fleek-storage-js";
 import { ethers } from "ethers";
 import DatePicker from "react-datepicker";
+import eventManagerAbi from "../../abi/EventManager.json";
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function CreateEvent(){
@@ -19,39 +20,35 @@ export default function CreateEvent(){
 
     let signer = null;
     let provider;
-    // let providerUrl = import.meta.env.VITE_ALCHEMY_MUMBAI_URL;
     let file;
-    
-    if (window.ethereum == null) {
-
-        // If MetaMask is not installed, we use the default provider,
+	const eventManagerAddress = import.meta.env.VITE_EVENT_MANAGER_ADDRESS;
+	
+	if (window.ethereum == null) {
+		// If MetaMask is not installed, we use the default provider,
         console.log("MetaMask not installed; using read-only defaults");
-        provider = ethers.getDefaultProvider();
-
+        provider = ethers.getDefaultProvider("matic");
+		
     } else {
-
-        // Connect to the MetaMask EIP-1193 object. This is a standard
+		// Connect to the MetaMask EIP-1193 object. This is a standard
         // protocol that allows Ethers access to make all read-only
         // requests through MetaMask.
         provider = new ethers.BrowserProvider(window.ethereum);
-        // provider = new ethers.JsonRpcProvider(providerUrl);
+	}
+	
+	const eventManagerContract = new ethers.Contract(eventManagerAddress, eventManagerAbi, provider);
 
-        // It also provides an opportunity to request access to write
-        // operations, which will be performed by the private key
-        // that MetaMask manages for the user.
-        signer = provider.getSigner();
-    }
+	async function createEvent(name, location, startDate, startTime, endTime, description, eventType, price, totalTickets) {
+		const signer = await provider.getSigner();
+		const contractWithSigner = eventManagerContract.connect(signer);
+		const tx = await contractWithSigner.createEvent(name, location, startDate, startTime, endTime, description, eventType, price, totalTickets);
+		const txResponse = await tx.wait();
+		console.log('Transaction sent!', txResponse.hash);
+	}
 
-	const uploadHandler = async (e) => {
-		file = e.target.files[0];
-	};
-
-	const createEventBtnHandler = async (e) => {
-		e.preventDefault();
-
+	async function uploadIpfsFile() {
 		const uploadedFile = await fleekStorage.upload({
-			apiKey: "Oxwo61HtXQs/jvFoPiayTg==",
-			apiSecret: "7nLTggZg9mr35tM9mBv86i34nfxaOca/EeNWb6J4Rt4=",
+			apiKey: import.meta.env.VITE_FLEEK_API_KEY,
+			apiSecret: import.meta.env.VITE_FLEEK_API_SECRET,
 			key: file.name,
 			ContentType: "multipart/form-data",
 			data: file,
@@ -68,6 +65,21 @@ export default function CreateEvent(){
 			"attributes": []
 		}
 		console.log(file, uploadedFile.hash, metadata)
+	}
+
+	const uploadHandler = async (e) => {
+		file = e.target.files[0];
+	};
+
+	const createEventBtnHandler = async (e) => {
+		e.preventDefault();
+
+		const endTime = unixStartDate + 7200;
+		const eventType = 1;
+		createEvent(name, location, unixStartDate, unixStartDate, endTime, description, eventType, price, totalTickets);
+
+		uploadIpfsFile();
+
 	};
 
     const dateToUnixTimestamp = date => {
