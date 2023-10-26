@@ -36,7 +36,6 @@ contract testTicketManager is Test {
         ticketManager.createEvent({
             name: "F1",
             location: "Japan Suzuka",
-            date: 100,
             startTime: 200,
             endTime: 1000,
             description: "Max wins the championship",

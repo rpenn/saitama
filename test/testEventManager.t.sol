@@ -26,7 +26,6 @@ contract testEventManager is Test {
         eventManager.createEvent({
             name: "F1",
             location: "Japan Suzuka",
-            date: 100,
             startTime: 200,
             endTime: 1000,
             description: "Max wins the championship",
@@ -40,7 +39,6 @@ contract testEventManager is Test {
         assertEq(currentEvent.creator, address(this));
         assertEq(currentEvent.name, "F1");
         assertEq(currentEvent.location, "Japan Suzuka");
-        assertEq(currentEvent.date, 100);
         assertEq(currentEvent.startTime, 200);
         assertEq(currentEvent.endTime, 1000);
         assertEq(currentEvent.description, "Max wins the championship");
@@ -76,14 +74,6 @@ contract testEventManager is Test {
         uint256 currentEventId = eventManager.getCurrentEventId();
         EventManager.Event memory currentEvent = eventManager.getEvent(currentEventId);
         assertEq(currentEvent.location, "Singapore GP");
-    }
-
-    function testEventDateIsEditedCorrectly() public {
-        testCreateEvent();
-        eventManager.editEvent(1, "F1", "Japan Suzuka", 150, 200, 1000, "Max wins the championship", 1, 10**17, 50000);
-        uint256 currentEventId = eventManager.getCurrentEventId();
-        EventManager.Event memory currentEvent = eventManager.getEvent(currentEventId);
-        assertEq(currentEvent.date, 150);
     }
 
     function testEventStartTimeIsEditedCorrectly() public {
