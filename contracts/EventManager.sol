@@ -15,7 +15,6 @@ contract EventManager {
         uint startTime;
         uint endTime;
         string description;
-        uint eventType;
         uint price;
         uint ticketQuantity;
         uint remainingTickets;
@@ -51,7 +50,6 @@ contract EventManager {
         uint startTime,
         uint endTime,
         string memory description,
-        uint eventType,
         uint price,
         uint ticketQuantity
     ) external {
@@ -64,7 +62,6 @@ contract EventManager {
             startTime: startTime,
             endTime: endTime,
             description: description,
-            eventType: eventType,
             price: price,
             ticketQuantity: ticketQuantity,
             remainingTickets: ticketQuantity
@@ -87,7 +84,6 @@ contract EventManager {
         uint startTime,
         uint endTime,
         string memory description,
-        uint eventType,
         // is it feasible to edit some of this stuff, post even creation? suppose tix are sold arleady?
         uint price,
         uint ticketQuantity
@@ -115,10 +111,6 @@ contract EventManager {
 
         if (bytes(description).length > 0 && keccak256(bytes(description)) != keccak256(bytes(eventToUpdate.description))) {
             eventToUpdate.description = description;
-        }
-
-        if (eventType != eventToUpdate.eventType) {
-            eventToUpdate.eventType = eventType;
         }
 
         if (price != eventToUpdate.price) {
