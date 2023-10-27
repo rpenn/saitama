@@ -39,7 +39,6 @@ contract testTicketManager is Test {
             startTime: 200,
             endTime: 1000,
             description: "Max wins the championship",
-            eventType: 1,
             price: 1e17, //corresponds to 0.1 ether
             ticketQuantity: 50000
         });
