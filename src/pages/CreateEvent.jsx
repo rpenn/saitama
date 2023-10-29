@@ -8,15 +8,17 @@ import "react-datepicker/dist/react-datepicker.css";
 export default function CreateEvent(){
 	const [name, setName] = useState()
     const [location, setLocation] = useState()
-    const [startDate, setStartDate] = useState(new Date())
-    const [unixStartDate, setUnixStartDate] = useState()
+    const [startTime, setStartTime] = useState(new Date())
+    const [unixStartTime, setUnixStartTime] = useState()
+	const [endTime, setEndTime] = useState(new Date())
+    const [unixEndTime, setUnixEndTime] = useState()
 	const [description, setDescription] = useState()
 	const [price, setPrice] = useState()
     const [totalTickets, setTotalTickets] = useState()
 
 	useEffect(() => {
-		console.log({ name, location, startDate, description, price, totalTickets });
-	}, [name, location, startDate, description, price, totalTickets]);
+		console.log({ name, location, startTime, description, price, totalTickets });
+	}, [name, location, startTime, description, price, totalTickets]);
 
     let signer = null;
     let provider;
@@ -37,10 +39,10 @@ export default function CreateEvent(){
 	
 	const eventManagerContract = new ethers.Contract(eventManagerAddress, eventManagerAbi, provider);
 
-	async function createEvent(name, location, startDate, startTime, endTime, description, eventType, price, totalTickets) {
+	async function createEvent(name, location, startTime, endTime, description, eventType, price, totalTickets) {
 		const signer = await provider.getSigner();
 		const contractWithSigner = eventManagerContract.connect(signer);
-		const tx = await contractWithSigner.createEvent(name, location, startDate, startTime, endTime, description, eventType, price, totalTickets);
+		const tx = await contractWithSigner.createEvent(name, location, startTime, endTime, description, eventType, price, totalTickets);
 		const txResponse = await tx.wait();
 		console.log('Transaction sent!', txResponse.hash);
 	}
@@ -74,9 +76,9 @@ export default function CreateEvent(){
 	const createEventBtnHandler = async (e) => {
 		e.preventDefault();
 
-		const endTime = unixStartDate + 7200;
+		const endTime = unixStartTime + 7200;
 		const eventType = 1;
-		createEvent(name, location, unixStartDate, unixStartDate, endTime, description, eventType, price, totalTickets);
+		createEvent(name, location, unixStartTime, endTime, description, eventType, price, totalTickets);
 
 		uploadIpfsFile();
 
@@ -86,10 +88,21 @@ export default function CreateEvent(){
         return Math.floor(date.getTime() / 1000);
     }
 
-    const startDateHandler = date => {
-        setStartDate(date);
+    const startTimeHandler = date => {
+        setStartTime(date);
+		let unixDate = dateToUnixTimestamp(date)
+		setUnixStartTime(unixDate);
+
+		if (date > endTime) {
+			setEndTime(date);
+			setUnixEndTime(unixDate);
+		}
+    }
+
+	const endTimeHandler = date => {
+        setEndTime(date);
         let unixDate = dateToUnixTimestamp(date)
-        setUnixStartDate(unixDate);
+        setUnixEndTime(unixDate);
     }
 
   return (
@@ -120,13 +133,26 @@ export default function CreateEvent(){
 				</li>
 				<br />
                 <li id="event_start_date">
-				Event Start Date
+				Event Start Time
 				<br />
                 <DatePicker
-                    // showIcon
-                    selected={startDate}
-                    onChange={(startDate) => startDateHandler(startDate)}
+                    showTimeSelect
+                    selected={startTime}
+                    onChange={(startTime) => startTimeHandler(startTime)}
                     minDate={new Date()}
+					dateFormat="MMMM d, yyyy h:mm aa"
+                />
+				</li>
+				<br />
+				<li id="event_end_date">
+				Event End Time
+				<br />
+                <DatePicker
+                    // showTimeSelect
+                    selected={endTime}
+                    onChange={(endTime) => endTimeHandler(endTime)}
+                    minDate={startTime}
+					dateFormat="MMMM d, yyyy h:mm aa"
                 />
 				</li>
 				<br />
@@ -165,7 +191,6 @@ export default function CreateEvent(){
 				<br />
 				<li>
 					<p>Event Image</p>
-					{/* <button class="upload-file"><img src="./bg-image-input.webp"/> */}
 					<input
 						id="upload-button-extend"
 						type="file"

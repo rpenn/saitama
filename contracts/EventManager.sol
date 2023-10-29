@@ -12,11 +12,9 @@ contract EventManager {
         address creator;
         string name;
         string location;
-        uint date;
         uint startTime;
         uint endTime;
         string description;
-        uint eventType;
         uint price;
         uint ticketQuantity;
         uint remainingTickets;
@@ -26,7 +24,6 @@ contract EventManager {
         uint indexed eventId,
         address indexed creator,
         string indexed location,
-        uint date,
         uint startTime,
         uint endTime,
         uint price
@@ -37,7 +34,6 @@ contract EventManager {
         uint indexed eventId,
         address indexed creator,
         string indexed location,
-        uint date,
         uint startTime,
         uint endTime,
         uint price
@@ -51,11 +47,9 @@ contract EventManager {
     function createEvent(
         string memory name,
         string memory location,
-        uint date,
         uint startTime,
         uint endTime,
         string memory description,
-        uint eventType,
         uint price,
         uint ticketQuantity
     ) external {
@@ -65,11 +59,9 @@ contract EventManager {
             creator: msg.sender,
             name: name,
             location: location,
-            date: date,
             startTime: startTime,
             endTime: endTime,
             description: description,
-            eventType: eventType,
             price: price,
             ticketQuantity: ticketQuantity,
             remainingTickets: ticketQuantity
@@ -79,7 +71,6 @@ contract EventManager {
             currentEventId,
             msg.sender,
             location,
-            date,
             startTime,
             endTime,
             price
@@ -90,11 +81,9 @@ contract EventManager {
         uint eventId,
         string memory name,
         string memory location,
-        uint date,
         uint startTime,
         uint endTime,
         string memory description,
-        uint eventType,
         // is it feasible to edit some of this stuff, post even creation? suppose tix are sold arleady?
         uint price,
         uint ticketQuantity
@@ -112,10 +101,6 @@ contract EventManager {
             eventToUpdate.location = location;
         }
 
-        if (date != eventToUpdate.date) {
-            eventToUpdate.date = date;
-        }
-
         if (startTime != eventToUpdate.startTime) {
             eventToUpdate.startTime = startTime;
         }
@@ -126,10 +111,6 @@ contract EventManager {
 
         if (bytes(description).length > 0 && keccak256(bytes(description)) != keccak256(bytes(eventToUpdate.description))) {
             eventToUpdate.description = description;
-        }
-
-        if (eventType != eventToUpdate.eventType) {
-            eventToUpdate.eventType = eventType;
         }
 
         if (price != eventToUpdate.price) {
@@ -144,7 +125,6 @@ contract EventManager {
             eventId,
             msg.sender,
             eventToUpdate.location,
-            eventToUpdate.date,
             eventToUpdate.startTime,
             eventToUpdate.endTime,
             eventToUpdate.price
