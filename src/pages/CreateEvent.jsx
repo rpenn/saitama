@@ -2,7 +2,7 @@ import React, { useState, useEffect, Profiler } from "react";
 import fleekStorage from "@fleekhq/fleek-storage-js";
 import { ethers } from "ethers";
 import DatePicker from "react-datepicker";
-import eventManagerAbi from "../../abi/EventManager.json";
+import ticketManagerAbi from "../../abi/TicketManager.json";
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function CreateEvent(){
@@ -37,11 +37,11 @@ export default function CreateEvent(){
         provider = new ethers.BrowserProvider(window.ethereum);
 	}
 	
-	const eventManagerContract = new ethers.Contract(eventManagerAddress, eventManagerAbi, provider);
+	const ticketManagerContract = new ethers.Contract(eventManagerAddress, ticketManagerAbi, provider);
 
 	async function createEvent(name, location, startTime, endTime, description, eventType, price, totalTickets) {
 		const signer = await provider.getSigner();
-		const contractWithSigner = eventManagerContract.connect(signer);
+		const contractWithSigner = ticketManagerContract.connect(signer);
 		const tx = await contractWithSigner.createEvent(name, location, startTime, endTime, description, eventType, price, totalTickets);
 		const txResponse = await tx.wait();
 		console.log('Transaction sent!', txResponse.hash);
@@ -148,7 +148,7 @@ export default function CreateEvent(){
 				Event End Time
 				<br />
                 <DatePicker
-                    // showTimeSelect
+                    showTimeSelect
                     selected={endTime}
                     onChange={(endTime) => endTimeHandler(endTime)}
                     minDate={startTime}
