@@ -17,18 +17,18 @@ export default function CreateEvent(){
     const [totalTickets, setTotalTickets] = useState()
 
 	useEffect(() => {
-		console.log({ name, location, startTime, description, price, totalTickets });
+		console.log('use effects', { name, location, startTime, description, price, totalTickets, file });
 	}, [name, location, startTime, description, price, totalTickets]);
 
     let signer = null;
     let provider;
     let file;
-	const eventManagerAddress = import.meta.env.VITE_EVENT_MANAGER_ADDRESS;
+	const ticketManagerAddress = import.meta.env.VITE_EVENT_MANAGER_ADDRESS;
 	
 	if (window.ethereum == null) {
 		// If MetaMask is not installed, we use the default provider,
-        console.log("MetaMask not installed; using read-only defaults");
-        provider = ethers.getDefaultProvider("matic");
+        console.log('MetaMask not installed; using read-only defaults');
+        provider = ethers.getDefaultProvider('matic');
 		
     } else {
 		// Connect to the MetaMask EIP-1193 object. This is a standard
@@ -37,14 +37,31 @@ export default function CreateEvent(){
         provider = new ethers.BrowserProvider(window.ethereum);
 	}
 	
-	const ticketManagerContract = new ethers.Contract(eventManagerAddress, ticketManagerAbi, provider);
+	const ticketManagerContract = new ethers.Contract(ticketManagerAddress, ticketManagerAbi, provider);
+	
+	// async function getMethods() {
+	// 	const id = await ticketManagerContract.getCurrentEventId();
+	// 	const events = await ticketManagerContract.events(5);
+
+	// 	console.log('id!', id);
+	// 	console.log('events!', events);
+	// }
+
+	// getMethods();
 
 	async function createEvent(name, location, startTime, endTime, description, price, totalTickets) {
 		const signer = await provider.getSigner();
 		const contractWithSigner = ticketManagerContract.connect(signer);
-		const tx = await contractWithSigner.createEvent(name, location, startTime, endTime, description, price, totalTickets);
-		const txResponse = await tx.wait();
-		console.log('Transaction sent!', txResponse.hash);
+
+		try {
+			const tx = await contractWithSigner.createEvent(name, location, startTime, endTime, description, price, totalTickets);
+			const txResponse = await tx.wait();
+			
+			return txResponse;
+
+		} catch (error) {
+			console.error('Error interacting with the contract.', error);
+		}
 	}
 
 	async function uploadIpfsFile() {
@@ -55,7 +72,7 @@ export default function CreateEvent(){
 			ContentType: "multipart/form-data",
 			data: file,
 			httpUploadProgressCallback: (event) => {
-				console.log(Math.round((event.loaded / event.total) * 100) + "% done");
+				console.log(Math.round((event.loaded / event.total) * 100) + '% done');
 			},
 		});
 		
@@ -71,16 +88,29 @@ export default function CreateEvent(){
 
 	const uploadHandler = async (e) => {
 		file = e.target.files[0];
+		console.log('file uploaded')
 	};
 
 	const createEventBtnHandler = async (e) => {
 		e.preventDefault();
 
+		if(!file) {
+			alert('Please upload image to create your event.');
+			return;
+		}
+
 		const endTime = unixStartTime + 7200;
-		createEvent(name, location, unixStartTime, endTime, description, price, totalTickets);
+		
+		const transaction = await createEvent(name, location, unixStartTime, endTime, description, price, totalTickets);
+		console.log(name, location, unixStartTime, endTime, description, price, totalTickets);
 
-		uploadIpfsFile();
-
+		if (transaction.status === 1) {
+			console.log('Transaction sent! Hash is: ' + transaction.hash);
+	
+			uploadIpfsFile();
+		} else {
+			console.log('Transaction failed.');
+		}
 	};
 
     const dateToUnixTimestamp = date => {
