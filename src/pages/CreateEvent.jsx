@@ -39,10 +39,10 @@ export default function CreateEvent(){
 	
 	const ticketManagerContract = new ethers.Contract(eventManagerAddress, ticketManagerAbi, provider);
 
-	async function createEvent(name, location, startTime, endTime, description, eventType, price, totalTickets) {
+	async function createEvent(name, location, startTime, endTime, description, price, totalTickets) {
 		const signer = await provider.getSigner();
 		const contractWithSigner = ticketManagerContract.connect(signer);
-		const tx = await contractWithSigner.createEvent(name, location, startTime, endTime, description, eventType, price, totalTickets);
+		const tx = await contractWithSigner.createEvent(name, location, startTime, endTime, description, price, totalTickets);
 		const txResponse = await tx.wait();
 		console.log('Transaction sent!', txResponse.hash);
 	}
@@ -77,8 +77,7 @@ export default function CreateEvent(){
 		e.preventDefault();
 
 		const endTime = unixStartTime + 7200;
-		const eventType = 1;
-		createEvent(name, location, unixStartTime, endTime, description, eventType, price, totalTickets);
+		createEvent(name, location, unixStartTime, endTime, description, price, totalTickets);
 
 		uploadIpfsFile();
 
