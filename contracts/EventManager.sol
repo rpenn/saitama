@@ -131,15 +131,27 @@ contract EventManager {
         );
     }
 
-    function getCurrentEventId() external view returns(uint256){
+    function getCurrentEventId() public view returns (uint256){
         return currentEventId;
     }
 
-    function getOwner() external view returns(address) {
+    function getOwner() external view returns (address) {
         return owner;
     }
 
-    function getEvent(uint256 _currentEventId) external view returns(Event memory) {
+    function getEvent(uint256 _currentEventId) external view returns (Event memory) {
         return events[_currentEventId];
     }
+
+    function getAllEvents() external view returns (Event[] memory) {
+        uint256 total = getCurrentEventId();
+        Event[] memory allEvents = new Event[](total);
+
+        for (uint256 i = 0; i < total; i++) {
+            allEvents[i] = events[i+1];
+        }
+        
+        return allEvents;
+    }
+
 }
