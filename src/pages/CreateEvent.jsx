@@ -5,7 +5,7 @@ import DatePicker from "react-datepicker";
 import ticketManagerAbi from "../../abi/TicketManager.json";
 import "react-datepicker/dist/react-datepicker.css";
 
-export default function CreateEvent(){
+export default function CreateEvent() {
 	const [name, setName] = useState()
     const [location, setLocation] = useState()
     const [startTime, setStartTime] = useState(new Date())
@@ -23,7 +23,7 @@ export default function CreateEvent(){
     let signer = null;
     let provider;
     let file;
-	const ticketManagerAddress = import.meta.env.VITE_EVENT_MANAGER_ADDRESS;
+	const ticketManagerAddress = import.meta.env.VITE_TICKET_MANAGER_ADDRESS;
 	
 	if (window.ethereum == null) {
 		// If MetaMask is not installed, we use the default provider,
