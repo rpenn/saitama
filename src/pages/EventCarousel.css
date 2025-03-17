@@ -1,0 +1,80 @@
+.event-carousel {
+    background-color: #f8f9fa;
+    border-radius: 1rem;
+    padding: 2rem 0;
+    margin: 2rem 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.event-carousel .carousel-item {
+    min-height: 500px;
+}
+
+.event-carousel .carousel-control-prev,
+.event-carousel .carousel-control-next {
+    width: 5%;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.event-carousel .carousel-control-prev {
+    left: 20px;
+}
+
+.event-carousel .carousel-control-next {
+    right: 20px;
+}
+
+.event-image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.event-image-container img {
+    transition: transform 0.3s ease;
+}
+
+.event-image-container:hover img {
+    transform: scale(1.05);
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.btn-primary {
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .event-carousel .carousel-item {
+        min-height: auto;
+    }
+    
+    .event-carousel .carousel-control-prev,
+    .event-carousel .carousel-control-next {
+        display: none;
+    }
+    
+    .event-image-container {
+        margin-top: 2rem;
+    }
+} 
