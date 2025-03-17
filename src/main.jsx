@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import CreateEvent from './pages/CreateEvent';
 import PurchaseEvent from './pages/PurchaseEvent';
 import ErrorPage from "./error-page";
+import 'bootstrap-icons/font/bootstrap-icons.css'
 
 const router = createBrowserRouter([
   {

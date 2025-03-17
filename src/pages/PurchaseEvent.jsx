@@ -1,4 +1,4 @@
 import React, { useState, useEffect } from 'react';
 
-export default function PUrchaseEvent(){
+export default function PurchaseEvent(){
 }

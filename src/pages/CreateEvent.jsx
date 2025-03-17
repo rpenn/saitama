@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Profiler } from "react";
+import React, { useState, useEffect } from "react";
 import fleekStorage from "@fleekhq/fleek-storage-js";
 import { ethers } from "ethers";
 import DatePicker from "react-datepicker";
@@ -102,6 +102,7 @@ export default function CreateEvent() {
 		const endTime = unixStartTime + 7200;
 		
 		const transaction = await createEvent(name, location, unixStartTime, endTime, description, price, totalTickets);
+		console.log(transaction);
 		console.log(name, location, unixStartTime, endTime, description, price, totalTickets);
 
 		if (transaction.status === 1) {
